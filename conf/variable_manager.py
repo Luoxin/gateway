@@ -72,12 +72,9 @@ class VariableManager(object):
         if not self.set_load_file(load_file=load_file, file_type=file_type):
             return
 
-        if self.load_file_path is None:
-            print("配置文件为找到")
-
         # 先判断配置文件是否存在，后期做默认配置
-        if not os.path.exists(self.load_file_path):
-            raise FileNotFoundError()
+        if self.load_file_path is None or not os.path.exists(self.load_file_path):
+            raise FileNotFoundError("conf file not found {}".format(self.load_file_path))
 
         if self.file_type == "yaml":
             try:
