@@ -58,8 +58,7 @@ def error_handler(e):
         response_data["errmsg"] = e.description
     else:
         response_data["errcode"] = -1
-        response_data["errmsg"] = "system error"
-        logger.error("err message {}".format(e))
+        response_data["errmsg"] = "system error:{}".format(e)
 
-    logger.error(response_data)
+    logger.error("err:{}".format(response_data))
     return jsonify(response_data)
