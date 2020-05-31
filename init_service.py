@@ -3,7 +3,7 @@
 """
 import threading
 
-from conf import global_variable
+from conf import g
 
 task_func_map = {}
 

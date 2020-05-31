@@ -5,11 +5,11 @@ import platform
 import socket
 import sys
 
-from conf import global_variable
+from conf import g
 
-LOG_DEBUG = global_variable.get_conf_bool("LOG_DEBUG", default=False)
-SERVER_NAME = global_variable.get_conf_str("SERVER_NAME", default="service")
-LOG_PATH = global_variable.get_conf_str("LOG_PATH", default="./service.log")
+LOG_DEBUG = g.get_conf_bool("LOG_DEBUG", default=False)
+SERVER_NAME = g.get_conf_str("SERVER_NAME", default="service")
+LOG_PATH = g.get_conf_str("LOG_PATH", default="./service.log")
 
 
 sys.path.append("../")

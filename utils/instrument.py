@@ -19,6 +19,9 @@ def is_json(data: (bytes, str)) -> bool:
 
 
 def encode_to_utf8(data: str != "") -> str:
+    if data is None:
+        return ""
+
     # chardet.detect(data.encode()).get("encoding")
     return data.encode().decode("utf-8")
 

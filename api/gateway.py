@@ -1,8 +1,11 @@
 import traceback
 
 import requests
-from flask import request, abort, Blueprint, make_response
+from flask import request, abort, Blueprint, make_response, ctx
+from werkzeug.exceptions import NotFound as HttpNotFound
 
+from conf import g
+from error_exception import create_error, InternalException
 from utils import logger
 
 gateway_api = Blueprint("gateway", __name__)
@@ -21,6 +24,8 @@ route_map = {}
     "/<path:path>", methods=["GET", "POST", "PUT", "PATCH", "DELETE", "COPY"]
 )
 def gateway(path):
+    rsp = ""
+
     scheme = request.scheme
     if scheme == "http":
         host = request.host
@@ -30,7 +35,7 @@ def gateway(path):
         data = request.data or request.form or None
 
         # 自定义dns
-        host = dns_map.get(host) if dns_map.get(host) is not None else host
+        host = g.dns_cache.get(host, host)
 
         # 去掉gateway
         path = path.replace("/gateway/", "/", 1)
@@ -38,26 +43,23 @@ def gateway(path):
         # TODO 对header做一些特殊操作
 
         try:
-            r = requests.request(
+            with requests.request(
                 method,
                 "{}://{}{}".format(scheme, host, path),
                 headers=headers,
                 data=data,
                 stream=True,
                 timeout=5,
-            )
+            ) as r:
+                if r.status_code != 200:
+                    create_error(-1)
 
-            rsp = make_response(r.content)
-            rsp.status_code = r.status_code
+                rsp = make_response(r.content)
+                # TODO 对返回的header做特殊的操作
+                # rsp.headers["X-Req-Id"] = utils.gen_uuid()
 
-            # TODO 对返回的header做特殊的操作
-            # rsp.headers["X-Req-Id"] = utils.gen_uuid()
-
-            return rsp
         except:
-            logger.error("err:{}".format(traceback.format_stack()))
+            logger.error("err:{}".format(traceback.format_exc()))
+            create_error(-1)
 
-    else:
-        pass
-
-    abort(404)
+    return rsp

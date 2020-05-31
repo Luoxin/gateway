@@ -49,6 +49,8 @@ def before_request():
 
 
 def error_handler(e):
+    logger.error("err:{}".format(e))
+
     response_data = {"data": {}, "errcode": 0, "errmsg": ""}
     if isinstance(e, InternalException):
         response_data["errcode"] = e.args[0]

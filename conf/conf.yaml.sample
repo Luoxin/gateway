@@ -10,3 +10,10 @@ PORT: 1800
 #LOG_DEBUG: true
 ## 日志路径
 # LOG_PATH: "./v2ray_subscribe"
+
+# 缓存相关
+# 缓存的时间
+CACHE_TTL: 0
+
+# 缓存的最大内存占用
+CACHE_MAXSIZE: 256

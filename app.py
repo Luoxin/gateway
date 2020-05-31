@@ -1,6 +1,6 @@
 from flask import Flask, Response
 
-from conf import global_variable
+from conf import g
 from conntext import before_request, ServiceResponse, error_handler
 from init_service import start_task
 from route_list import ROUTE_LIST
@@ -28,9 +28,7 @@ class ReverseProxied(object):
 
 class ServiceCentre(Flask):
     def __init__(self):
-        super().__init__(
-            import_name=global_variable.get_conf_str("SERVER_NAME", "v2ray_subscribe")
-        )
+        super().__init__(import_name=g.get_conf_str("SERVER_NAME", "v2ray_subscribe"))
 
         self._init_service()
 
@@ -67,8 +65,17 @@ def favicon():
 
 if __name__ == "__main__":
     app.run(
-        global_variable.get_conf_str("HOST", default="0.0.0.0"),
-        port=global_variable.get_conf_int("PORT", default=5000),
+        g.get_conf_str("HOST", default="0.0.0.0"),
+        port=g.get_conf_int("PORT", default=5000),
         threaded=True,
-        debug=global_variable.get_conf_bool("LOG_DEBUG", default=False),
+        debug=g.get_conf_bool("LOG_DEBUG", default=False),
     )
+
+    # http_server = WSGIServer(
+    #     (
+    #         g.get_conf_str("HOST", default="0.0.0.0"),
+    #         g.get_conf_int("PORT", default=5000),
+    #     ),
+    #     app,
+    # )
+    # http_server.serve_forever()
