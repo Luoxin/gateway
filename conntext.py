@@ -37,11 +37,12 @@ def before_request():
         real_ip = request.headers.get("X-Forwarded-For")
 
     logger.info(
-        "Path: {}  Method: {} RemoteAddr: {} headers: {} request_message: {}  ".format(
+        "Path: {}  Method: {} RemoteAddr: {} Headers: {} RequestSize: {} RequestMessage: {}  ".format(
             request.path,
             request.method,
             real_ip,
             request.headers.to_wsgi_list(),
+            request.content_length,
             request_message
             # , request.__dict__
         )

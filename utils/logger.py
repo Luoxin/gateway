@@ -42,8 +42,7 @@ class Logger(logging.Logger):
     _first = True
     # 什么时间什么级别在哪个模块的哪个文件的哪个方法 哪个行号做了什么事情
     formatter = logging.Formatter(
-        "{} pid:%(process)d  level:%(levelname)s  ts:%(asctime)s  "
-        "filename:%(filename)s  funcName:%(funcName)s  lineno: %(lineno)d  "
+        "{}(%(process)d,%(thread)d) %(levelname)s %(asctime)s   file:%(filename)s  func:%(funcName)s:%(lineno)d "
         "msg:%(message)s".format(SERVER_NAME)
     )
 

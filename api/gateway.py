@@ -44,8 +44,6 @@ def gateway(path):
 
         # TODO 对header做一些特殊操作
 
-        print("{}://{}{}".format(scheme, host, path))
-
         try:
             with requests.request(
                 method,
