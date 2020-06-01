@@ -4,7 +4,6 @@ import os
 import platform
 import socket
 import sys
-from flask import g
 
 from conf import s
 
@@ -36,15 +35,16 @@ if not os.path.exists(dir_path) and LOG_DEBUG:
     os.makedirs(dir_path)
 del dir_path
 
+_log_format = "{}(%(process)d,%(thread)d) %(levelname)s %(asctime)s   file:%(filename)s  func:%(funcName)s:%(lineno)d    msg:%(message)s".format(
+    SERVER_NAME
+)
+
 
 class Logger(logging.Logger):
     _instance = None
     _first = True
-    # 什么时间什么级别在哪个模块的哪个文件的哪个方法 哪个行号做了什么事情
-    formatter = logging.Formatter(
-        "{}(%(process)d,%(thread)d) %(levelname)s %(asctime)s   file:%(filename)s  func:%(funcName)s:%(lineno)d "
-        "msg:%(message)s".format(SERVER_NAME)
-    )
+
+    formatter = logging.Formatter(_log_format)
 
     def __init__(
         self,
@@ -84,7 +84,7 @@ class PushLogger(logging.Logger):
     hostname = None
     _instance = None
     _first = True
-    formatter = logging.Formatter("")
+    formatter = logging.Formatter(_log_format)
     _logger = Logger(
         name=SERVER_NAME, debug=log_config["debug"], log_path=log_config["log_path"],
     )
