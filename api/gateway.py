@@ -5,9 +5,9 @@ import werkzeug
 from flask import request, abort, Blueprint, make_response, ctx
 from werkzeug.exceptions import NotFound as HttpNotFound
 
-from conf import g
+from conf import s
 from error_exception import create_error, InternalException
-from utils import logger
+from log import logger
 
 gateway_api = Blueprint("gateway", __name__)
 
@@ -36,7 +36,7 @@ def gateway(path):
         data = request.data or request.form or None
 
         # 自定义dns
-        # host = g.dns_cache.get(host, host)
+        host = s.dns_cache.get(host, host)
         host = "203.195.187.254:3000"
 
         # 去掉gateway

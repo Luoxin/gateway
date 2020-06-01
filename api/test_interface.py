@@ -1,6 +1,6 @@
 from flask import Blueprint, request
-from utils import logger  # 日志
 from error_exception import create_error_with_msg
+from log import logger
 
 test_interface_api = Blueprint("test_interface", __name__)
 

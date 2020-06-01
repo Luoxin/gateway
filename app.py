@@ -1,18 +1,20 @@
 from flask import Flask, Response
 
-from conf import g
-from conntext import before_request, ServiceResponse, error_handler
+from conf import s
+from conntext import before_request, ServiceResponse, error_handler, after_request
 from init_service import start_task
+from log import logger
 from route_list import ROUTE_LIST
-from utils import logger
+import utils
 
 
-class ReverseProxied(object):
+class WsgiApp(object):
     def __init__(self, app):
         self.app = app
 
     # 对header做特殊的处理
     def __call__(self, environ, start_response):
+        # 对scheme的处理
         script_name = environ.get("HTTP_X_SCRIPT_NAME", "")
         if script_name:
             environ["SCRIPT_NAME"] = script_name
@@ -28,7 +30,7 @@ class ReverseProxied(object):
 
 class ServiceCentre(Flask):
     def __init__(self):
-        super().__init__(import_name=g.get_conf_str("SERVER_NAME", "v2ray_subscribe"))
+        super().__init__(import_name=s.get_conf_str("SERVER_NAME", "v2ray_subscribe"))
 
         self._init_service()
 
@@ -50,12 +52,14 @@ class ServiceCentre(Flask):
         start_task()
 
         self.before_request_funcs.setdefault(None, []).append(before_request)
+        self.after_request_funcs.setdefault(None, []).append(after_request)
 
         self._register_error_handler(None, Exception, error_handler)
 
 
 app = ServiceCentre()
-app.wsgi_app = ReverseProxied(app.wsgi_app)
+app.wsgi_app = WsgiApp(app.wsgi_app)
+app.auto_find_instance_path()
 
 
 @app.route("/favicon.ico")
@@ -65,10 +69,10 @@ def favicon():
 
 if __name__ == "__main__":
     app.run(
-        g.get_conf_str("HOST", default="0.0.0.0"),
-        port=g.get_conf_int("PORT", default=5000),
+        s.get_conf_str("HOST", default="0.0.0.0"),
+        port=s.get_conf_int("PORT", default=5000),
         threaded=True,
-        debug=g.get_conf_bool("LOG_DEBUG", default=False),
+        debug=s.get_conf_bool("LOG_DEBUG", default=False),
     )
 
     # http_server = WSGIServer(

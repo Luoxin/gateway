@@ -4,13 +4,13 @@ import os
 import platform
 import socket
 import sys
+from flask import g
 
-from conf import g
+from conf import s
 
-LOG_DEBUG = g.get_conf_bool("LOG_DEBUG", default=False)
-SERVER_NAME = g.get_conf_str("SERVER_NAME", default="service")
-LOG_PATH = g.get_conf_str("LOG_PATH", default="./service.log")
-
+LOG_DEBUG = s.get_conf_bool("LOG_DEBUG", default=False)
+SERVER_NAME = s.get_conf_str("SERVER_NAME", default="service")
+LOG_PATH = s.get_conf_str("LOG_PATH", default="./service.log")
 
 sys.path.append("../")
 
@@ -140,7 +140,7 @@ class PushLogger(logging.Logger):
         self._logger._log(logging.WARN, self.__to_string(*msg), None)
 
     def warning(self, *msg):
-        self._logger._log(logging.WARNING, self.__to_string(*msg), None)
+        self.warn(self, *msg)
 
     def critical(self, *msg):
         self._logger._log(logging.CRITICAL, self.__to_string(*msg), None)

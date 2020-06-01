@@ -9,8 +9,8 @@ import traceback
 
 import ntplib
 from flask import Blueprint
-from conf import g
-from utils import logger  # 日志
+from conf import s
+from log import logger
 
 time_info = Blueprint("time_info", __name__)
 
@@ -49,9 +49,9 @@ def check_time_consistent(host, port) -> bool:
 def keep_time_consistent():
     need_start = False
     logger.info("时间校验服务启动")
-    ntp_interval = g.get_conf_int("NTP_INTERVAL", default=64)
-    ntp_host = g.get_conf_str("NTP_HOST", default="ntp.aliyun.com")
-    ntp_port = g.get_conf_int("NTP_PORT", default=123)
+    ntp_interval = s.get_conf_int("NTP_INTERVAL", default=64)
+    ntp_host = s.get_conf_str("NTP_HOST", default="ntp.aliyun.com")
+    ntp_port = s.get_conf_int("NTP_PORT", default=123)
     while True:
         if not check_time_consistent(ntp_host, ntp_port):
             break
