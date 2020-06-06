@@ -63,6 +63,9 @@ def gateway(path):
                 # rsp.headers["X-Req-Id"] = utils.gen_uuid()
 
                 rsp.headers = werkzeug.datastructures.Headers(rsp_headers)
+        except requests.exceptions.ConnectTimeout:
+            logger.error("request timeout")
+            create_error(-1)
         except:
             logger.error("err:{}".format(traceback.format_exc()))
             create_error(-1)
