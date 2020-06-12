@@ -6,6 +6,7 @@ from init_service import start_task
 from log import logger
 from route_list import ROUTE_LIST
 import utils
+import traceback
 
 
 class WsgiApp(object):
@@ -14,19 +15,22 @@ class WsgiApp(object):
 
     # 对header做特殊的处理
     def __call__(self, environ, start_response):
-        # 对scheme的处理
-        script_name = environ.get("HTTP_X_SCRIPT_NAME", "")
-        if script_name:
-            environ["SCRIPT_NAME"] = script_name
-            path_info = environ["PATH_INFO"]
-            if path_info.startswith(script_name):
-                environ["PATH_INFO"] = path_info[len(script_name) :]
-
-        scheme = environ.get("HTTP_X_SCHEME", "")
-        if scheme:
-            environ["wsgi.url_scheme"] = scheme
-        return self.app(environ, start_response)
-
+        try:
+            # 对scheme的处理
+            # script_name = environ.get("HTTP_X_SCRIPT_NAME", "")
+            # if script_name:
+            #     environ["SCRIPT_NAME"] = script_name
+            #     path_info = environ["PATH_INFO"]
+            #     if path_info.startswith(script_name):
+            #         environ["PATH_INFO"] = path_info[len(script_name) :]
+            #
+            # scheme = environ.get("HTTP_X_SCHEME", "")
+            # if scheme:
+            #     environ["wsgi.url_scheme"] = scheme
+            return self.app(environ, start_response)
+        except:
+            logger.error("environ:{} ,err:{}".format(environ, traceback.format_exc()))
+            return self.app(environ, start_response)
 
 class ServiceCentre(Flask):
     def __init__(self):

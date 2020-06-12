@@ -17,3 +17,6 @@ CACHE_TTL: 0
 
 # 缓存的最大内存占用
 CACHE_MAXSIZE: 256
+
+# 数据库地址
+DB_URL: sqlite:///gateway.vdb?check_same_thread=false
