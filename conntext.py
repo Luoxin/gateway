@@ -46,7 +46,7 @@ def after_request(response):
         logger.warning("response type {} not ")
 
     logger.info(
-        "{}  Path: {}  Method: {} RemoteAddr: {} Headers: {} RequestSize: {} RequestMsg: {} ResponseMsg {}".format(
+        "{}  Path: {}  Method: {} RemoteAddr: {} Headers: {} RequestSize: {} RequestMsg: {} ResponseMsg {} {}".format(
             g.get("id"),
             request.path,
             request.method,
@@ -54,8 +54,8 @@ def after_request(response):
             request.headers.to_wsgi_list(),
             request.content_length,
             request_message,
-            rsp_msg
-            # , request.__dict__
+            rsp_msg,
+            response.content_length
         )
     )
 
